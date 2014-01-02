@@ -1,0 +1,8 @@
+{
+  "name": "node_igraph",
+  "version": "0.0.1",
+  "description": "Node.js Addon targeting igraph",
+  "main": "smoke.js",
+  "private": true,
+  "gypfile": true
+}
