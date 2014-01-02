@@ -1,5 +1,5 @@
-var addon = require('./build/Release/addon');
+var nigraph = require('./build/Release/nigraph');
 
-addon(function(msg){
+nigraph(function(msg){
   console.log(msg);
 });
