@@ -26,23 +26,29 @@ Handle<Value> run_igraph_erdos_renyi_game(const Arguments& args) {
   // layout
   igraph_matrix_init(&coords, 0, 0);
   igraph_layout_sphere(&graph, &coords);
-  //igraph_matrix_print(&coords); 
   
-  // and my attempt at getting coords based off of igraph_matrix_print impl .. AND IT WORKS!!
-  long int nr = 10;
-  long int nc = 3;
-  long int i, j;
+  /////////////////////////////////////////////////////////////////////
+  // and my attempt at getting coords based off of igraph_matrix_print impl
+  Handle<Array> points_array = Array::New(vertex_count_in->Value());  
+  long int nr = vertex_count_in->Value();
+  long int i;
   for (i=0; i<nr; i++) {
-    for (j=0; j<nc; j++) {
-      if (j!=0) { putchar(' '); }
-      printf("%f", MATRIX(coords, i, j));
-    }
-    printf("\n");
+    Handle<Array> points = Array::New(3);
+    points->Set(0, Number::New(MATRIX(coords, i, 0)));
+    points->Set(1, Number::New(MATRIX(coords, i, 1)));
+    points->Set(2, Number::New(MATRIX(coords, i, 2)));
+    points_array->Set(i, points); 
   }
+  /////////////////////////////////////////////////////////////////////
 
+  /////////////////////////////////////////////////////////////////////
+  // TODO: revisit vertext and edge attributes. we're going to need them soon.
+  // @see cattributes.c
+  // @see http://igraph.sourceforge.net/doc-0.5/html/ch09s02.html
   //print_attributes(&graph);
+  /////////////////////////////////////////////////////////////////////
 
-  // selectors and iterators
+  // selectors and iterators... which we aren't doing anything with
   igraph_vs_seq(&vtx_selector, 0, (vertex_count_in->Value() -1));
   igraph_vit_create(&graph, vtx_selector, &vtx_iter);
 
@@ -51,6 +57,8 @@ Handle<Value> run_igraph_erdos_renyi_game(const Arguments& args) {
     //printf(" %li", (long int)IGRAPH_VIT_GET(vtx_iter));
     IGRAPH_VIT_NEXT(vtx_iter);
   }
+
+  /////////////////////////////////////////////////////////////////////
  
   // and perform callback
   Local<Function> cb = Local<Function>::Cast(args[1]);
@@ -64,6 +72,7 @@ Handle<Value> run_igraph_erdos_renyi_game(const Arguments& args) {
   result->Set(String::NewSymbol("v_count"), v_count_out);
   result->Set(String::NewSymbol("e_count"), e_count_out);
   result->Set(String::NewSymbol("diameter"), diameter_out);
+  result->Set(String::NewSymbol("points"), points_array);
 
   Local<Value> argv[argc] = {result};
 
