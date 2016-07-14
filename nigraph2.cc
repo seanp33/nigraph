@@ -6,23 +6,44 @@ using namespace v8;
 void igraph_erdos_renyi_game(const Nan::FunctionCallbackInfo<Value>& info){
   //igraph_integer_t diameter;
   igraph_t g;
-  //igraph_matrix_t coords;
+  igraph_matrix_t coords;
+
   Local<Number> vertex_count_in = info[0].As<Number>();
   Local<Function> cb = info[1].As<Function>();
 
   igraph_erdos_renyi_game(&g, IGRAPH_ERDOS_RENYI_GNP, vertex_count_in->Value(), 5.0/vertex_count_in->Value(), IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
   //igraph_erdos_renyi_game(&g, IGRAPH_ERDOS_RENYI_GNP, 1000, 5.0/1000, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+
+  // counts
   Local<Value> v_count_out = Nan::New(igraph_vcount(&g));
   Local<Value> e_count_out = Nan::New(igraph_ecount(&g));
+
+  // layout
+  igraph_matrix_init(&coords, 0, 0);
+  igraph_layout_sphere(&g, &coords);
+  /////////////////////////////////////////////////////////////////////
+  // and my attempt at getting coords based off of igraph_matrix_print impl
+  Local<Array> points_array = Nan::New<Array>(vertex_count_in->Value());
+  long int nr = vertex_count_in->Value();
+  long int i;
+  for (i=0; i<nr; i++) {
+    Local<Array> points = Nan::New<Array>(3);
+    points->Set(0, Nan::New(MATRIX(coords, i, 0)));
+    points->Set(1, Nan::New(MATRIX(coords, i, 1)));
+    points->Set(2, Nan::New(MATRIX(coords, i, 2)));
+    points_array->Set(i, points);
+  }
 
   v8::Local<v8::Object> result = Nan::New<v8::Object>();
   result->Set(Nan::New("v_count").ToLocalChecked(), v_count_out);
   result->Set(Nan::New("e_count").ToLocalChecked(), e_count_out);
+  result->Set(Nan::New("points").ToLocalChecked(), points_array);
 
   const unsigned argc = 1;
   Local<Value> argv[argc] = {result};
 
   igraph_destroy(&g);
+  igraph_matrix_destroy(&coords);
 
   Nan::MakeCallback(Nan::GetCurrentContext()->Global(), cb, argc, argv);
 }
