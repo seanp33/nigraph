@@ -1,6 +1,7 @@
 configuration
 node_modules
 build
+igraph_smoke
 *.*~
 *~
 *#*#
@@ -11,3 +12,4 @@ build
 *.log
 .idea
 *.DS_Store
+*.vscode

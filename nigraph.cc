@@ -21,15 +21,15 @@ Handle<Value> run_igraph_erdos_renyi_game(const Arguments& args) {
   igraph_erdos_renyi_game(&graph, IGRAPH_ERDOS_RENYI_GNP, vertex_count_in->Value(), 5.0/1000,
 			  IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
-  igraph_diameter(&graph, &diameter, 0, 0, 0, IGRAPH_UNDIRECTED, 1);  
+  igraph_diameter(&graph, &diameter, 0, 0, 0, IGRAPH_UNDIRECTED, 1);
 
   // layout
   igraph_matrix_init(&coords, 0, 0);
   igraph_layout_sphere(&graph, &coords);
-  
+
   /////////////////////////////////////////////////////////////////////
   // and my attempt at getting coords based off of igraph_matrix_print impl
-  Handle<Array> points_array = Array::New(vertex_count_in->Value());  
+  Handle<Array> points_array = Array::New(vertex_count_in->Value());
   long int nr = vertex_count_in->Value();
   long int i;
   for (i=0; i<nr; i++) {
@@ -37,7 +37,7 @@ Handle<Value> run_igraph_erdos_renyi_game(const Arguments& args) {
     points->Set(0, Number::New(MATRIX(coords, i, 0)));
     points->Set(1, Number::New(MATRIX(coords, i, 1)));
     points->Set(2, Number::New(MATRIX(coords, i, 2)));
-    points_array->Set(i, points); 
+    points_array->Set(i, points);
   }
   /////////////////////////////////////////////////////////////////////
 
@@ -59,7 +59,7 @@ Handle<Value> run_igraph_erdos_renyi_game(const Arguments& args) {
   }
 
   /////////////////////////////////////////////////////////////////////
- 
+
   // and perform callback
   Local<Function> cb = Local<Function>::Cast(args[1]);
   const unsigned argc = 1;

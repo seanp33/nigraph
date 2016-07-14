@@ -1,1 +1,8 @@
+1. install igraph per http://igraph.org/c/doc/
+2. install node-gyp `npm install -g node-gyp`
+
 node-gyp rebuild
+
+# and to compile the the igraph smoke
+`gcc igraph_smoke.c -I/usr/local/include/igraph -L/usr/local/lib -ligraph -o igraph_smoke`
+... of if those -I -L paths are incorrect, learn wherre they are on your system with `pkg-config --libs --cflags igraph`
