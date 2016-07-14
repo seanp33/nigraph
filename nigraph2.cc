@@ -12,7 +12,6 @@ void igraph_erdos_renyi_game(const Nan::FunctionCallbackInfo<Value>& info){
   Local<Function> cb = info[1].As<Function>();
 
   igraph_erdos_renyi_game(&g, IGRAPH_ERDOS_RENYI_GNP, vertex_count_in->Value(), 5.0/vertex_count_in->Value(), IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
-  //igraph_erdos_renyi_game(&g, IGRAPH_ERDOS_RENYI_GNP, 1000, 5.0/1000, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
   // counts
   Local<Value> v_count_out = Nan::New(igraph_vcount(&g));
@@ -21,8 +20,8 @@ void igraph_erdos_renyi_game(const Nan::FunctionCallbackInfo<Value>& info){
   // layout
   igraph_matrix_init(&coords, 0, 0);
   igraph_layout_sphere(&g, &coords);
-  /////////////////////////////////////////////////////////////////////
-  // and my attempt at getting coords based off of igraph_matrix_print impl
+
+  // collect coordinates from layout
   Local<Array> points_array = Nan::New<Array>(vertex_count_in->Value());
   long int nr = vertex_count_in->Value();
   long int i;
