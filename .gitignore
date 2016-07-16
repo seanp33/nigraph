@@ -1,6 +1,6 @@
 configuration
 node_modules
-build
+_build
 igraph_smoke
 *.*~
 *~
